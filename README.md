@@ -1,6 +1,13 @@
 # Computacao-Paralela
-Trabalhos do laboratorio de computação paralela
+### Trabalhos do laboratorio de Computação Paralela
 
-NOME: Enzo D'amato Rocha TIA: 32125992
-NOME: Enrique Granado Novaes TIA: 32107803
-NOME: Gabriel Santos de Oliveira Arruda TIA: 32107439
+Grupo:
+
+Nome: Enrique Granado Novaes
+TIA:32107803
+
+Nome: Enzo D'amato Rocha
+TIA:32125992
+
+Nome: Gabriel Santos de Oliveira Arruda
+TIA:32107439
