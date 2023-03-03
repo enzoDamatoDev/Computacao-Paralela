@@ -12,7 +12,10 @@ int main(){
 		for(j=i;j<max-i;j++){
 			printf("%d",j+1);
 		}
-		printf("\n");
+		printf("\n ");
+		for(j=0;j<i;j++){
+			printf(" ");
+		}
 	}
 	
 	return 0;
