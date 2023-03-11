@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <unistd.h>
-#include  <sys/types.h>
 
 int main()
 {
@@ -9,18 +8,20 @@ int main()
    printf ("Enter the number: ");
    scanf ("%d", &num);
    int id = fork();
-   int i,j = num;
+   int i;
 	if(id == 0){
+		int j = num;
 		close(pip[0]);
 		
 		for (i=1; j > 1; j = j -2) {
 		     i=i*j;
 		}
-		write(pip[1], &j, sizeof(j));
+		write(pip[1], &i, sizeof(j));
 		close(pip[1]);
 		
 	}else{
-		for (i=2; j > 1; j = j -2) {
+		int j = num-1;
+		for (i=1; j > 1; j = j -2) {
 			 i=i*j;
 		}
 		int impar;
@@ -28,10 +29,8 @@ int main()
 		close(pip[1]);
 		read(pip[0],&impar,sizeof(impar));
 		close(pip[0]);
-		
-		int final = impar*j;
+		int final = impar*i;
 		printf("The factorial of %d is %d\n",num,final);
-		wait(NULL);
 	}
 	return 0;
 }
