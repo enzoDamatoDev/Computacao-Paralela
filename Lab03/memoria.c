@@ -28,29 +28,29 @@ int main() {
 		exit(1);
 	}
 	
-	printf("valor 1: "); // valor inicial
+	printf("(pai)valor 1: "); // valor inicial
 	scanf("%d", mem);
 	
-	printf("%d\n",mem[0]);
+	printf("(pai)%d\n",mem[0]);
 	
 	int id = fork(); // cria outro processo
 	
 	if(id==0){ // processo filho
 		int valor2;
 		
-		printf("valor 2 (+): "); // valor a ser somado
+		printf("(filho)valor 2 (+): "); // valor a ser somado
 		scanf("%d", &valor2);
 		(*mem) += valor2; // modifica o valor da memoria compartilhada
-		printf("valor da memoria: %d\n",mem[0]);
+		printf("(filho)valor da memoria: %d\n",mem[0]);
 	}else{
 		wait(NULL); // espera o processo filho encerrar
 		int valor3;
 		
-		printf("valor 3 (*): "); // valor a ser multiplicado
+		printf("(pai)valor 3 (*): "); // valor a ser multiplicado
 		scanf("%d", &valor3);
 		(*mem) *= valor3; // modifica o valor da memoria compartilhada
 
-		printf("valor final: %d\n",mem[0]);
+		printf("(pai)valor final: %d\n",mem[0]);
 	}
 
 
