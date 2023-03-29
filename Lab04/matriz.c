@@ -14,20 +14,20 @@ Gabriel Santos 32107439 */
 int main(int argc, char **argv)
 {
 	
-    if(argc < 2){ // verifica se  foi passado o tamnho da matriz
+    if(argc < 2){ // verifica se  foi passado o tamanho da matriz
 	   printf("insira o tamanho da matriz no segundo argumento!\n");
 	   exit(1);
     }
     
-    int SIZE = atoi(argv[1]);
-    int row, col,k=0,sum,A[SIZE][SIZE],B[SIZE][SIZE]; // inicia as variaveis
+    int SIZE = atoi(argv[1]); //salva o tamanho da matriz
+    int row, col,k=0,sum,A[SIZE][SIZE],B[SIZE][SIZE]; // inicia as variaveis7
     
     for(row=0; row<SIZE; row++) // inicia matriz A
     {
         for(col=0; col<SIZE; col++)
         {
             A[row][col] = k++;
-        }
+	}
     }
 
      for(row=0; row<SIZE; row++)// inicia matriz B
@@ -56,10 +56,8 @@ int main(int argc, char **argv)
         }
         printf("\n");
     }
-    printf("\n");
-    
-    
-    
+    printf("\n");    
+
     int shmid,subShmid[SIZE]; // identificador da memória comum 
 	int size = SIZE*SIZE*sizeof(int); // tamanho da memoria alocada
 	int **mem; // ponteiro para a memoria comparilhada
@@ -74,7 +72,7 @@ int main(int argc, char **argv)
 			perror("Erro no shmat");
 			exit(1);
 		}
-		for(k=0;k<SIZE;k++){
+		for(k=0;k<SIZE;k++){ //aloca a segunda dimensao da matriz compartilhada
 
 			subShmid[k] = shmget(IPC_PRIVATE, SIZE*sizeof(int*), IPC_CREAT|SHM_R|SHM_W|0);
 			if((mem[k] = shmat(subShmid[k],0,0))== (int*)-1){ // recupera o endereço de memoria compartilhada
@@ -85,7 +83,7 @@ int main(int argc, char **argv)
     
     int id = fork(); // cria outro processo
 	if(id == 0){// processo filho
-		for(row=1; row<SIZE; row +=2)
+		for(row=1; row<SIZE; row +=2) //multiplica as linhas impares
 	    {
 	        for(col=0; col<SIZE; col++)
 	        {
@@ -94,12 +92,12 @@ int main(int argc, char **argv)
 	            {
 	                sum += A[row][k] * B[k][col];
 	            }
-		      	//printf("filho mem[%d][%d] = %d %p\n",row,col,sum,&mem[row][col]);
+		  
 	            mem[row][col] = sum;
 	        }
 	    }
 	}else{// processo pai
-	    for(row=0; row<SIZE; row +=2)
+	    for(row=0; row<SIZE; row +=2) //multiplica as linhas pares
 	    {
 	        for(col=0; col<SIZE; col++)
 	        {
@@ -108,7 +106,7 @@ int main(int argc, char **argv)
 	            {
 	                sum += A[row][k] * B[k][col];
 	            }
-		      	//printf("pai mem[%d][%d] = %d %p\n",row,col,sum,&mem[row][col]);
+		    
 	            mem[row][col] = sum;
 	        }
 	    }
@@ -116,23 +114,22 @@ int main(int argc, char **argv)
 	    wait(NULL); // espera o processo filho encerrar
 	
 	
-	    printf("\nProduct of matrix A * B = \n");
+	    printf("\nRESULTADO:\n"); //imprime o resultado
 	    for(row=0; row<SIZE; row++)
 	    {
 	        for(col=0; col<SIZE; col++)
 	        {
 	            printf("%d ",mem[row][col]);
-
 	        }
 	        printf("\n");
 	    }
-	    
+	   
 	    if ((shmctl(shmid, IPC_RMID, NULL)) == -1){ perror("Erro shmctl()") ; // destroi a memoria compartilhada
 			printf("erro ao apagar\n");
 			exit(1);
 		}
 		
-		for(k=0;k<SIZE;k++){
+		for(k=0;k<SIZE;k++){ // destroi a segunda dimensao da matriz compartilhada
 			if ((shmctl(subShmid[k], IPC_RMID, NULL)) == -1){ perror("Erro shmctl()") ; // destroi a memoria compartilhada
 				printf("erro ao apagar\n");
 				exit(1);
