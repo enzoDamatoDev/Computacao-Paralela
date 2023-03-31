@@ -34,7 +34,6 @@ int main(int argc, char **argv){
 	pthread_t *threadh;
 	tamanho = atoi(argv[1]);
 	int i,j,count=0;
-	
 	A = (int **)malloc(tamanho*sizeof(int *));
 	for(i=0;i<tamanho;i++){
 		A[i] = (int *)malloc(tamanho*sizeof(int));
