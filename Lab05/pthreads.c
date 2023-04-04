@@ -28,6 +28,7 @@ void *calcula(void* id){
 
 int main(int argc, char **argv){
 	if(argc<2){
+		printf("informe o tamanho da matriz!");
 		exit(1);
 	}
 	long thread;
