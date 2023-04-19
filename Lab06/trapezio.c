@@ -23,7 +23,6 @@ int main(int argc, char **argv){
 	scanf("%lf %lf %d", &a, &b,&n);
 	# pragma omp parallel num_threads ( thread_count ) 
 	Trap(a,b,n, &global_result);
-	f(global_result);
 	
 	print("With n = %d trapezoids, our estimate\n", n);
 	printf("of the integral from %f to %f = %.14e\n", a, b, global_result);
