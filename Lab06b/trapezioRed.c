@@ -8,11 +8,15 @@ Gabriel Santos 32107439 */
 #include <math.h>
 #include <omp.h>
 
-void Trap(double a, double b, int n, double* global_result_p);
+double Trap(double a, double b, int n);
 double f(double x);
 
 
 int main(int argc, char **argv){
+	if(argc < 5){
+		printf("agumentos:\n1 - numero de threads\n2 - lado A\n3 - lado B\n4 - N\n");
+		exit(1);
+	}
 	double global_result = 0.0;
 	double a, b;
 	int n; 
@@ -22,15 +26,16 @@ int main(int argc, char **argv){
 	a = strtol(argv[2], NULL, 10);
 	b = strtol(argv[3], NULL, 10);
 	n = strtol(argv[4], NULL, 10);
-	# pragma omp parallel num_threads ( thread_count ) 
-	Trap(a,b,n, &global_result);
+	# pragma omp parallel num_threads ( thread_count ) \
+	reduction(+:global_result)
+	global_result += Trap(a,b,n);
 	
 	printf("With n = %d trapezoids, our estimate\n", n);
 	printf("of the integral from %f to %f = %.14e\n", a, b, global_result);
 	return 0;
 }
 
-void Trap(double a, double b, int n, double* global_result_p){
+double Trap(double a, double b, int n){
 	double h,x, my_result;
 	double local_a, local_b;
 	int i, local_n;
@@ -48,8 +53,7 @@ void Trap(double a, double b, int n, double* global_result_p){
 	}
 	my_result = my_result*h;
 	
-	# pragma omp critical
-	*global_result_p += my_result;
+	return my_result;
 }
 double f(double x){
 	return exp(x);

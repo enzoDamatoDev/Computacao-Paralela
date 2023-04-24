@@ -5,7 +5,7 @@ Gabriel Santos 32107439 */
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <pthread.h>
+#include <omp.h>
 
 //variaveis globais: tamanho das matrizes e as matrizes em si
 int tamanho;
@@ -13,8 +13,8 @@ int **A;
 int **B;
 int **C;
 
-void *calcula(void* id){ // função que irá rodar em cada thread (multiplicação da linha de seu id)
-	long row = (long)id;
+void calcula(){ // funcao que ira rodar em cada thread (multiplicacao da linha de seu id)
+	int row = omp_get_thread_num();
 	int sum=0,col,k;
 	
     for(col=0; col<tamanho; col++)
@@ -28,10 +28,10 @@ void *calcula(void* id){ // função que irá rodar em cada thread (multiplicaç
         C[row][col] = sum;
     }
 	        
-	return NULL;
+	return;
 }
 
-void calculaSerial(int tamanho){ // função para multiplicar as matrizes em serial
+void calculaSerial(){ // funcao para multiplicar as matrizes em serial
 	int i,j,k,sum;
 	for(i=0;i<tamanho;i++){
 		for(j=0;j<tamanho;j++){
@@ -42,8 +42,9 @@ void calculaSerial(int tamanho){ // função para multiplicar as matrizes em ser
 			C[i][j] = sum;
 		}
 	}
+	return;
 }
-void inicializar(int tamanho){ // aloca e preenche as matrizes
+void inicializar(){ // aloca e preenche as matrizes
 	int i,j,count=0;
 	A = (int **)malloc(tamanho*sizeof(int *));
 	for(i=0;i<tamanho;i++){
@@ -72,28 +73,15 @@ int main(int argc, char **argv){
 		printf("informe o tamanho da matriz!");
 		exit(1);
 	}
-	long thread;
-	pthread_t *threadh;
 	tamanho = atoi(argv[1]);
-	int i,j;	
-	inicializar(tamanho); // inicializa as matrizes
-	
-	threadh = malloc (tamanho*sizeof(pthread_t));
-	
-	for(thread =0; thread<tamanho;thread++){
-		pthread_create(&threadh[thread],NULL, calcula,(void *)thread); // inicializa as threads
-	}
-
-	for(thread =0;thread<tamanho;thread++){
-		pthread_join(threadh[thread],NULL); // espera o encerramento das threads
-	}
-	free(threadh); // libera o espaço das threads
-	
-	
-	if(tamanho == 0 && argc == 3){ // se o primeiro argumento do programa for 0, o calculo sera serial
+	if(tamanho == 0){ // se o primeiro argumento do programa for 0, o calculo sera serial
 		tamanho = atoi(argv[2]);
-		inicializar(tamanho);
-		calculaSerial(tamanho);
+		inicializar();
+		calculaSerial();
+	}else{
+		inicializar(); // inicializa as matrizes
+		# pragma omp parallel num_threads ( tamanho ) 
+		calcula();
 	}
 	return 0;
 }
