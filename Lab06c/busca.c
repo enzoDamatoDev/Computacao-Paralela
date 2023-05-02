@@ -7,8 +7,8 @@ Gabriel Santos 32107439 */
 #include <stdlib.h>
 #include <omp.h>
 
-//int size = 65536;
-int size = 10;
+int size = 65536;
+//int size = 10;
 int alvo, indice=-1;
 int *array;
 
@@ -16,7 +16,7 @@ void thread(){
 	int atual = omp_get_thread_num();
 	int tamanho = size/omp_get_num_threads();
 	int inicio = atual*tamanho;
-//	printf("%d %d %d\n",inicio,alvo, inicio+tamanho-1);
+	//printf("%d %d %d\n",inicio,alvo, inicio+tamanho-1);
 	int i;
 	for(i=inicio;i<inicio+tamanho;i++){
                 if(array[i] == alvo){
@@ -31,6 +31,9 @@ int main(int argc, char **argv){
 	alvo = atoi(argv[1]);
 	int thread_count = omp_get_max_threads();
 
+	if(thread_count>size){
+		thread_count=size;
+	}
 	array = (int *)calloc( size, sizeof(int) );
 	if(array == NULL){ exit(1); }
 	int i;
