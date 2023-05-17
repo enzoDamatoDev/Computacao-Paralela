@@ -20,3 +20,4 @@ Comandos adicionais:<br>
 <br><br>
 
 !nvaccelinfo:
+![image](https://github.com/enzoDamatoDev/Computacao-Paralela/assets/79601694/f5daced7-a280-4063-8b00-09f68f09d32a)
